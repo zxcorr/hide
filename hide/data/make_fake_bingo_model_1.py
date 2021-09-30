@@ -31,13 +31,13 @@ import os
 # CHOOSE DESTINATION PATHS
 # ==================================================================
 
-destination_path = '/usr/local/lib/python2.7/dist-packages/hide-0.1.0-py2.7.egg/hide/data/' # change to your destination (the place where your hide package is located within your python repository)
+destination_path = '~/anaconda2/lib/python2.7/site-packages/hide-0.1.0-py2.7.egg/hide/data/' # change to your destination (the place where your hide package is located within your python repository)
 
 # ==================================================================
 # READ IN BLEIEN INFO
 # ==================================================================
 
-rfi_in = np.loadtxt("rfi_template_7m_FFT_ADU.dat") # for completeness               
+rfi_in = np.loadtxt("rfi_template_7m_FFT_ADU.dat") # for completeness
 
 # ==================================================================
 # BINGO PARAMETERS
@@ -60,19 +60,19 @@ amplitude_osc = 0.15 # dimensionless
 
 # ==================================================================
 # CALCULATION
-# ==================================================================                GANHO = 1 RFI = 0 BACKGROUND = 0 NOISE = 0
+# ==================================================================
 
 # Loop on the horns
 for i in range(0, number_horns):
 
-# GAIN MODEL        #fixar ganho = 1
+# GAIN MODEL
     sigma_gain = (calibration_error / 100.)
     amplitude_gain_random = np.random.normal(loc=0., scale=sigma_gain, size=n_channels) # draw the amplitude from a Gaussian distribution with mean = 0 and standard deviation = sigma_gain
     bingo_fake_gain = (1. + amplitude_gain_random + amplitude_osc * np.sin((np.pi * frequencies)/delta_nu_osc)) # BINGO Fake Gain model 1 (Kelvin to ADU)
-    bingo_fake_gain = np.full(n_channels, 1)
+
 # BASELINE (BACKGROUND) MODEL
     bingo_fake_background = (1. + amplitude_osc * np.sin((np.pi * frequencies)/delta_nu_osc)) # BINGO Fake Amplitude model 1, in ADU
-    bingo_fake_background = np.zeros(n_channels)
+
 # OUTPUT
     output_gain = np.zeros((n_channels, 2))
     output_gain[:, 0] = frequencies
