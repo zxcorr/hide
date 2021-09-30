@@ -6,6 +6,6 @@ six
 h5py
 mock
 pyephem
-healpy
+healpy == 1.13.0
 astropy
 git+https://github.com/cosmo-ethz/ivy.git
