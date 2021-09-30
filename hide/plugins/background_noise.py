@@ -14,17 +14,19 @@
 
 '''
 Created on Dec 8, 2014
+Modified on August, 2018 by Lucas Olivari
+Modified on September, 2020 by Carlos Otobone and Joao Alberto
 
-author: jakeret
+
+authors: jakeret, Lucas Olivari
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
 import numpy as np
 
 from ivy.plugin.base_plugin import BasePlugin
-from hide.utils.signal import noisegen
+from hide.utils.signal import noisegen, noise_amplitude, thermal_noise_tod, color_noise_tod
 import importlib
-
 
 class Plugin(BasePlugin):
     """
@@ -32,18 +34,26 @@ class Plugin(BasePlugin):
     """
 
     def __call__(self):
+                
         params = self.ctx.params
         size = self.ctx.tod_vx.shape
         if params.load_noise_template:
             mod = importlib.import_module(self.ctx.params.instrument)
             freq = self.ctx.frequencies
-            wn_scale, cn_amp, cn_beta = mod.get_noise_params(freq)
-            params.white_noise_scale = wn_scale
-            params.color_noise_amp = cn_amp
-            params.color_noise_beta = cn_beta 
+            #wn_scale, cn_amp, cn_beta = mod.get_noise_params(freq)
+            wn_scale = mod.get_noise_params(self.ctx.params.noise_path, freq)
+            #params.white_noise_scale = wn_scale
+            #params.color_noise_amp = cn_amp
+            #params.color_noise_beta = cn_beta
         
-        noise = get_noise(params.white_noise_scale, params.color_noise_amp,
-                          params.color_noise_beta, size)
+        else:
+            mod = importlib.import_module(self.ctx.params.instrument)
+            freq = self.ctx.frequencies
+            wn_scale = 1.0
+
+        #noise = get_noise(params.white_noise_scale, params.color_noise_amp, params.color_noise_beta, size)
+
+        noise = get_noise_lucas(wn_scale, params.color_alpha, params.color_fknee, params.color_beta, params.sample_freq, params.temp_sys, params.delta_nu, size)
         
         self.ctx.tod_vx += noise
         #TODO: no noise for Y-polarization
@@ -61,3 +71,22 @@ def get_noise(scale, alpha, beta, size):
         return wnoise + rnoise
     else:
         return wnoise
+
+def get_noise_lucas(scale_adu, alpha, fknee, beta, sfreq, tempsys, deltanu, size):
+
+    n_nu = size[0]
+    samples = size[1]
+    
+    wnoise = np.zeros((n_nu, samples))
+
+    for i in range(0, n_nu):
+        wnoise[i, :] = thermal_noise_tod(sfreq, size)
+
+    wnoise_norm = np.std(wnoise) # We must normalize our TOD
+
+    wnoise = np.mean(scale_adu) * noise_amplitude(deltanu, tempsys) * (wnoise / wnoise_norm)
+    
+    rnoise = np.mean(scale_adu) * noise_amplitude(deltanu, tempsys) * (color_noise_tod(alpha, fknee, beta, deltanu, sfreq, size) / wnoise_norm)
+    
+    # it always simulate colored noise
+    return wnoise + rnoise

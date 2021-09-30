@@ -32,7 +32,7 @@ class Plugin(BasePlugin):
     """
 
     def __call__(self):
-        np.random.seed(self.ctx.params.seed)
+        #np.random.seed(self.ctx.params.seed)
         self.ctx.strategy_start = parse_datetime(self.ctx.params.strategy_start)
         self.ctx.strategy_end   = parse_datetime(self.ctx.params.strategy_end)
                                                     

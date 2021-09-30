@@ -34,7 +34,7 @@ class Plugin(BasePlugin):
         mod = importlib.import_module(self.ctx.params.instrument)
         
         #delegate loading of background as a function of elevation
-        bg_model = mod.get_background(self.ctx.frequencies,
+        bg_model = mod.get_background("data/background_template_fake_bingo_model_1_0.dat",self.ctx.frequencies,
                                       self.ctx.params.elevation_model)
         
         # get all elevations from strategy (in radians)

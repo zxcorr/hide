@@ -62,10 +62,14 @@ class Plugin(BasePlugin):
             
             elAntenna = np.interp(time_steps, time, np.degrees(coords[:, 1]))
             azAntenna = np.interp(time_steps, time, np.degrees(coords[:, 2]))
+            raAntenna = np.interp(time_steps, time, np.degrees(coords[:, 3]))
+            decAntenna = np.interp(time_steps, time, np.degrees(coords[:, 4]))
             
-            filler = np.zeros((8, len(time_steps)))
+            #filler = np.zeros((8, len(time_steps)))
+            filler = np.zeros((6, len(time_steps)))
             
-            data = np.vstack((time_steps, azAntenna, elAntenna, filler)).T
+            #data = np.vstack((time_steps, azAntenna, elAntenna, filler)).T
+            data = np.vstack((time_steps, azAntenna, elAntenna, filler, raAntenna, decAntenna)).T
             
             coord_path = os.path.join(output_path,
                                       "%04d"%date.year,

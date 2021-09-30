@@ -34,7 +34,7 @@ class Plugin(BasePlugin):
         mod = importlib.import_module(self.ctx.params.instrument)
         
         #delegate loading of gain per frequency
-        gain = mod.get_gain(self.ctx.frequencies)
+        gain = mod.get_gain("data/gain_template_fake_bingo_model_1_0.dat",self.ctx.frequencies)
         
         #apply gain to TOD
         #TODO: no gain for Y-polarization

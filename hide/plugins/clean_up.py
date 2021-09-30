@@ -32,7 +32,7 @@ class Plugin(BasePlugin):
         del self.ctx.frequencies
         del self.ctx.strategy_coords
         del self.ctx.beams
-        del self.ctx.tod_vx_rfi 
+        #del self.ctx.tod_vx_rfi 
         
     def __str__(self):
         return "Clean up"
