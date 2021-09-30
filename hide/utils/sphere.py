@@ -108,7 +108,7 @@ def get_observer(ctx):
     obs = ephem.Observer()
     obs.lon = str(ctx.params.telescope_longitude)
     obs.lat = str(ctx.params.telescope_latitude)
-    obs.elevation = 500
+    obs.elevation = ctx.params.telescope_elevation
     obs.pressure = 0
     return obs
 

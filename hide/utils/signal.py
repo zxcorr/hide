@@ -14,13 +14,92 @@
 
 '''
 Created on Nov 10, 2015
+Modified on August, 2018 by Lucas Olivari
 
-author: jakeret
+authors: jakeret, Lucas Olivari
 '''
 
 from __future__ import division
 
 import numpy as np
+
+def noise_amplitude(delta_nu, t_sys):
+
+    return t_sys / np.sqrt(delta_nu)
+
+def thermal_noise_tod(sfreq, size):
+
+    samples = size[1]
+
+    # frequencies
+    f = np.fft.fftfreq(samples, d = 1. / sfreq)
+    
+    # scaling factor for all frequencies 
+    s_scale = abs(np.concatenate([f[f<0], [f[-1]]]))
+    
+    s_scale = 1. + np.zeros(s_scale.size)
+    
+    # scale random power + phase
+    sr = s_scale * np.random.normal(size=len(s_scale))
+    si = s_scale * np.random.normal(size=len(s_scale))
+    if not (samples % 2): si[0] = si[0].real
+
+    s = sr + 1J * si
+    
+    # for odd sample numbers, there is one less positive 
+    ## freq than for even sample numbers
+    s = np.concatenate([s[1-(samples % 2):][::-1], s[:-1].conj()])
+
+    # time series
+    y = np.fft.ifft(s).real
+
+    return y
+
+def color_noise_tod(alpha, fknee, beta, delta_nu, sfreq, size):
+
+    n_nu = size[0]
+    samples = size[1]
+
+    w_freq_0 = 1. / (n_nu * delta_nu)	
+
+    # frequencies
+    f_time = np.fft.fftfreq(samples, d = 1. / sfreq)
+    w_freq = np.fft.fftfreq(n_nu, d = delta_nu)
+
+    # scaling factor for all frequencies 
+    s_scale_time = abs(np.concatenate([f_time[f_time<0], [f_time[-1]]]))
+    s_scale_freq = abs(np.concatenate([w_freq[w_freq<0], [w_freq[-1]]]))
+
+    ps_scale_time = (fknee / s_scale_time)**(alpha/2.)
+    ps_scale_freq = (w_freq_0 / s_scale_freq)**((1. - beta)/(2. * beta))		
+
+    # Stuart's normalization	
+
+    ps_scale_freq_norm = (w_freq_0 / s_scale_freq)**((1. - beta)/(beta))
+    sum_norm = np.sum(w_freq_0 * ps_scale_freq_norm[:-1])
+    int_norm = (n_nu - 1.)/(2. * n_nu * delta_nu) 		
+    c_norm = n_nu / (1. + (sum_norm / int_norm) * (n_nu - 1.))	
+
+    test = np.zeros((ps_scale_freq.size, samples), dtype=np.complex64)	
+
+    for nu in range(0, ps_scale_freq.size):
+        psr = ps_scale_time * np.random.normal(size=len(ps_scale_time))
+        psi = ps_scale_time * np.random.normal(size=len(ps_scale_time))
+        if not (samples % 2): psi[0] = psi[0].real
+        psc = psr + 1J * psi
+        psc = np.concatenate([psc[1-(samples % 2):][::-1], psc[:-1].conj()])
+  
+        test[nu, :] = ps_scale_freq[nu] * psc
+
+    test_out = np.zeros((n_nu, samples), dtype=np.complex64)	
+
+    for s in range(0, samples):
+	test_out[:, s] = np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1]]) #np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1].conj()]) 
+		
+    # time series -- note the normalization
+    y = np.fft.ifftn(test_out).real * np.sqrt(n_nu)
+
+    return np.sqrt(c_norm) * y
 
 def noisegen(beta=0, N=2**13):
     """
