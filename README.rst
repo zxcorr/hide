@@ -24,3 +24,5 @@ HIDE: Hydrogen (HI) Data Emulator
 The **HIDE** package has been developed at ETH Zurich in the `Software Lab of the Cosmology Research Group <http://www.cosmology.ethz.ch/research/software-lab.html>`_ of the `ETH Institute of Astronomy <http://www.astro.ethz.ch>`_. 
 
 The development is coordinated on `GitHub <http://github.com/cosmo-ethz/hide>`_ and contributions are welcome. The documentation of **HIDE** is available at `readthedocs.org <http://hide.readthedocs.io/>`_ .
+
+This current version is an adaptation being developed in association with the BINGO radiotelescope colaboration, which can be found on `GitHub <https://github.com/zxcorr/hide/>`_.
