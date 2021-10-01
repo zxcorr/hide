@@ -33,7 +33,7 @@ class Plugin(BasePlugin):
         #load module
         mod = importlib.import_module(self.ctx.params.instrument)
         
-        GAIN_PATH = ctx.params.gain_path
+        GAIN_PATH = self.ctx.params.gain_path
         
         #delegate loading of gain per frequency
         gain = mod.get_gain(GAIN_PATH, self.ctx.frequencies)
