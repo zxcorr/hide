@@ -33,7 +33,7 @@ class Plugin(BasePlugin):
         #load module
         mod = importlib.import_module(self.ctx.params.instrument)
         
-        BACKGROUND_PATH = ctx.params.background_path 
+        BACKGROUND_PATH = self.ctx.params.background_path 
         
         #delegate loading of background as a function of elevation
         bg_model = mod.get_background(BACKGROUND_PATH, self.ctx.frequencies,
