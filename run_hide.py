@@ -28,7 +28,7 @@ import os
 # CHOOSE BINGO MODEL
 # ==================================================================
 
-bingo_model = 1 # either 1 or 2
+bingo_model = 0 # either 0, 1 or 2
 
 # ==================================================================
 # CHOOSE DESTINATION AND WORKING PATHS
@@ -90,42 +90,22 @@ for i in range(0, az_in.size):
                              # altitude (elevation) pointing (this assumes a drift scan!)
 
         elif line == 'gain_path\n':
-            if bingo_model == 1:
-                destination.write('gain_path = "data/gain_template_fake_bingo_model_1_' + 
+            destination.write('gain_path = "data/gain_template_fake_bingo_model_{}_'.format(bingo_model) + 
                               str(i) + '.dat"' + '\n') 
-                             # gain template used for each horn
-            elif bingo_model == 2:
-                destination.write('gain_path = "data/gain_template_fake_bingo_model_2_' +
-                             str(i) + '.dat"' + '\n') 
                              # gain template used for each horn
 
         elif line == 'background_path\n':
-            if bingo_model == 1:
-                destination.write('background_path = "data/background_template_fake_bingo_model_1_' +
+            destination.write('background_path = "data/background_template_fake_bingo_model_{}_'.format(bingo_model) +
                               str(i) + '.dat"' + '\n') 
-                             # background template used for each horn
-            elif bingo_model == 2:
-                destination.write('background_path = "data/background_template_fake_bingo_model_2_' +
-                             str(i) + '.dat"' + '\n') 
                              # background template used for each horn
 
         elif line == 'noise_path\n':
-            if bingo_model == 1:                
-                destination.write('noise_path = "data/noise_template_fake_bingo_model_1_' +
-                             str(i) + '.dat"' + '\n') 
-                             # noise template used for each horn
-            elif bingo_model == 2:
-                destination.write('noise_path = "data/noise_template_fake_bingo_model_2_' +
+            destination.write('noise_path = "data/noise_template_fake_bingo_model_{}_'.format(bingo_model) +
                              str(i) + '.dat"' + '\n') 
                              # noise template used for each horn
 
         elif line == 'rfi_path\n':
-            if bingo_model == 1:
-                destination.write('rfi_path = "data/gain_template_fake_bingo_model_1_' +
-                             str(i) + '.dat"' + '\n') 
-                             # rfi template used for each horn
-            elif bingo_model == 2:
-                destination.write('rfi_path = "data/gain_template_fake_bingo_model_2_' +
+            destination.write('rfi_path = "data/gain_template_fake_bingo_model_{}_'.format(bingo_model) +
                              str(i) + '.dat"' + '\n') 
                              # rfi template used for each horn
 
