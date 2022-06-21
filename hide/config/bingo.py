@@ -48,9 +48,9 @@ plugins = ["hide.plugins.initialize",
                                                             "hide.plugins.reduce_frequency_plugin", 
 #                                                             parallel=False
                                                             ),
-                                    "hide.plugins.apply_gain",
-                                    "hide.plugins.add_background",
-                                    "hide.plugins.background_noise",
+                                    #"hide.plugins.apply_gain",
+                                    #"hide.plugins.add_background",
+                                    #"hide.plugins.background_noise",
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
                                      ],
@@ -144,8 +144,13 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ASTRO (SIGNAL)
 # ==================================================================
 astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
+<<<<<<< Updated upstream
 astro_signal_file_name = "ame_cube_hs_test_celestial.fits" #"synch_cube_hs_test_rot.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory         #"maps_foregrounds_test.fits"
 astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory           #"freqs_foregrounds_test.fits"
+=======
+astro_signal_file_name = "ame_cube_hs_test_rot_kelvin.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
+astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
+>>>>>>> Stashed changes
 
 cache_astro_signals = True         # flag if loaded signals per frequency should be kept in memory
 

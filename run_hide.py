@@ -51,7 +51,10 @@ al_in = np.loadtxt('altitude.txt') # one horn -- one altitude [degree]
 
 dfile_short = 'bingo_horn'
 
-for i in range(0, az_in.size):
+initial_horn = 0
+final_horn = 1 #az_in.size
+
+for i in range(initial_horn, final_horn):
     destination = open(working_path + 'bingo_horn_' + str(i) + '.py', 'w')
     source = open(working_path + 'bingo.py', 'r')
     for line in source:
@@ -118,9 +121,9 @@ for i in range(0, az_in.size):
 # SETTING AND RUNNING HIDE
 # ==================================================================
 
-for i in range(0, az_in.size):
+for i in range(initial_horn, final_horn):
     print("\nExecuting horn {0}\n".format(i))
     os.system('sudo cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
-    os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
+    os.system('sudo hide hide.config.' + dfile_short + '_' + str(i)) # run hide
 
 
