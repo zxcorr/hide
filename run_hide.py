@@ -13,8 +13,10 @@
 
 '''
 Created on August 1, 2018
-
 author: Lucas Olivari
+
+Modified on 2022
+authors: Joao Alberto, Carlos Otobone
 '''
 
 import numpy as np
@@ -34,8 +36,7 @@ bingo_model = 0 # either 0, 1 or 2
 # CHOOSE DESTINATION AND WORKING PATHS
 # ==================================================================
 
-destination_path = '/usr/local/lib/python2.7/dist-packages/hide-0.1.0-py2.7.egg/hide/config/' # change to your destination (the place where your hide package is located within your python repository)
-#working_path = '/home/otobone/Documentos/ic/projeto_karin/hide-master/hide/config/' # change to your working path
+destination_path = '/usr/local/lib/python3.8/dist-packages/hide-0.1.0-py3.8.egg/hide/config/' # change to your destination (the place where your hide package is located within your python repository)
 working_path = os.getcwd() + "/hide/config/"
 
 # ==================================================================
