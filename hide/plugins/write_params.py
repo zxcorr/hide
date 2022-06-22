@@ -40,11 +40,11 @@ def register_params(ctx):
     
     lines = config_file.readlines()
     for line in lines:
-    	p_file.write(line)
+        p_file.write(line)
         
-	config_file.close()
+    config_file.close()
     p_file.close()
-	
+    
 
 
 
