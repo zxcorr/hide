@@ -14,8 +14,10 @@
 
 '''
 Created on August, 2018
-
 author: Lucas Olivari
+
+Modified on 2022
+authors: Joao Alberto, Carlos Otobone
 '''
 
 from __future__ import print_function, division, absolute_import, unicode_literals
@@ -76,7 +78,7 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 output_path = "/home/otobone/Documentos/ic/projeto_karin/resultados/TOD/freq_bingo/feixes/deg_2/2d/nside_128/fwhm_0_011/"  # path to output folder
 overwrite = False
-file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file's name 
+file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
                    # it will be written by run_hide.py
 params_file_fmt
@@ -108,13 +110,16 @@ beam_profile_provider = "hide.beam.gaussian_fwhm"
 beam_frequency_min = 980.       # minimum frequency: [MHz]
 beam_frequency_max = 1260.      # maximum frequency: [MHz]            #last point discarted
 beam_frequency_pixscale = 10.    # pixel scale (frequency/beam)
-dish_diameter = 40.             # effective diameter of the dish [m]
-fwhm_0 = 0.011                   # FWHM for the minimum frequency
 beam_nside = 128                 # healpix NSIDE -- must be the same as that of the input sky maps
 beam_response = 1               # beam response [0..1]
-
 beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
 beam_azimut = 2               # azimuth [degree] -- same as above
+
+# Gaussian (gaussian)
+dish_diameter = 40.             # effective diameter of the dish [m]
+# Gaussian FWHM (gaussian_fwhm)
+fwhm_0 = 0.011                   # FWHM for the minimum frequency
+
 
 
 # ==================================================================
