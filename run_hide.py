@@ -123,7 +123,7 @@ for i in range(initial_horn, final_horn):
 
 for i in range(initial_horn, final_horn):
     print("\nExecuting horn {0}\n".format(i))
-    os.system('sudo cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
-    os.system('sudo hide hide.config.' + dfile_short + '_' + str(i)) # run hide
+    os.system('cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
+    os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
 
 
