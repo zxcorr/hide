@@ -76,7 +76,7 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 # OUTPUT
 # ==================================================================
-output_path = "/home/otobone/Documentos/ic/projeto_karin/resultados/TOD/freq_bingo/feixes/deg_2/2d/nside_128/fwhm_0_011/"  # path to output folder
+output_path = "./"  # path to output folder
 overwrite = False
 file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
@@ -149,8 +149,6 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ASTRO (SIGNAL)
 # ==================================================================
 astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
-astro_signal_file_name = "ame_cube_hs_test_celestial.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
-astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 astro_signal_file_name = "ame_cube_hs_test_rot_kelvin.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
 astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 
