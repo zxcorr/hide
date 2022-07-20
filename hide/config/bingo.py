@@ -14,8 +14,10 @@
 
 '''
 Created on August, 2018
-
 author: Lucas Olivari
+
+Modified on 2022
+authors: Joao Alberto, Carlos Otobone
 '''
 
 from __future__ import print_function, division, absolute_import, unicode_literals
@@ -48,9 +50,9 @@ plugins = ["hide.plugins.initialize",
                                                             "hide.plugins.reduce_frequency_plugin", 
 #                                                             parallel=False
                                                             ),
-                                    "hide.plugins.apply_gain",
-                                    "hide.plugins.add_background",
-                                    "hide.plugins.background_noise",
+                                    #"hide.plugins.apply_gain",
+                                    #"hide.plugins.add_background",
+                                    #"hide.plugins.background_noise",
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
                                      ],
@@ -74,9 +76,9 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 # OUTPUT
 # ==================================================================
-output_path = "/home/otobone/Documentos/ic/projeto_karin/resultados/TOD/freq_bingo/feixes/deg_2/2d/nside_128/fwhm_0_011/"  # path to output folder
+output_path = "./"  # path to output folder
 overwrite = False
-file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file's name 
+file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
                    # it will be written by run_hide.py
 params_file_fmt
@@ -96,8 +98,8 @@ polarizations = ['PXX']
 #-----------------
 # BINGO
 #-----------------
-telescope_latitude = -7.0         # sul-norte              
-telescope_longitude = -38.0          # oeste-leste           
+telescope_latitude = -7.0
+telescope_longitude = -38.0
 
 telescope_elevation = 0.0        # altitude
 
@@ -108,13 +110,16 @@ beam_profile_provider = "hide.beam.gaussian_fwhm"
 beam_frequency_min = 980.       # minimum frequency: [MHz]
 beam_frequency_max = 1260.      # maximum frequency: [MHz]            #last point discarted
 beam_frequency_pixscale = 10.    # pixel scale (frequency/beam)
-dish_diameter = 40.             # effective diameter of the dish [m]                  NAO FUNCIONA COM O gaussian_beam_size
-fwhm_0 = 0.011                   # PARA FREQUENCIA MINIMA (tamanho do primeiro "lobe")
 beam_nside = 128                 # healpix NSIDE -- must be the same as that of the input sky maps
 beam_response = 1               # beam response [0..1]
+beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
+beam_azimut = 2               # azimuth [degree] -- same as above
 
-beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation -- it doesn't affect the results significantly)
-beam_azimut = 2               # azimuth [degree] -- same as above               TROCAR O NOME DEPOIS (delta_elevation)
+# Gaussian (gaussian)
+dish_diameter = 40.             # effective diameter of the dish [m]
+# Gaussian FWHM (gaussian_fwhm)
+fwhm_0 = 0.011                   # FWHM for the minimum frequency
+
 
 
 # ==================================================================
@@ -144,8 +149,8 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ASTRO (SIGNAL)
 # ==================================================================
 astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
-astro_signal_file_name = "ame_cube_hs_test_celestial.fits" #"synch_cube_hs_test_rot.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory         #"maps_foregrounds_test.fits"
-astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory           #"freqs_foregrounds_test.fits"
+astro_signal_file_name = "ame_cube_hs_test_rot_kelvin.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
+astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 
 cache_astro_signals = True         # flag if loaded signals per frequency should be kept in memory
 
@@ -167,11 +172,11 @@ elevation_model = [0., 0., 0.] # chose [1, -1., 1.] for model 1 and [1.26321397e
 # ==================================================================
 # NOISE -- HARPER ET AL. (2018) MODEL
 # ==================================================================
-load_noise_template = False                                                    # load_noise_template = True
-temp_sys = 0                   # system temperature, in K                   # temp_sys = 0.0
+load_noise_template = False
+temp_sys = 0                   # system temperature, in K
 delta_nu = (28/3)*1e6                   # channel width, in Hz
-color_alpha = 0                  # 1 /f alpha parameter             ZERAR O ALFA PARA DESATIVAR O 1/F
-color_fknee = 0.001                 # 1/ f knee frequency, in Hz                                          TRABALHAR COM mHz
+color_alpha = 0                  # 1 /f alpha parameter
+color_fknee = 0.001                 # 1/ f knee frequency, in Hz
 color_beta = 0.5                 # 1 / f beta parameter (0.001 - 1)
 sample_freq = 1.0                 # telescope sample rate, in Hz
 

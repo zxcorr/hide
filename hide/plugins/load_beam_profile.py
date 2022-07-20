@@ -42,11 +42,11 @@ class Plugin(BasePlugin):
         #setting up angular grid
         beam_area = np.radians(params.beam_elevation) * np.radians(params.beam_azimut) # [rad]
         pixel_area = hp.nside2pixarea(params.beam_nside, degrees=False)
-        pixels = np.floor(np.sqrt(beam_area / pixel_area))
+        pixels = int(np.floor(np.sqrt(beam_area / pixel_area)))
         pixels = pixels if pixels%2==1 else pixels+1
         
         pixel_size = hp.max_pixrad(params.beam_nside)
-        theta = (np.linspace(0, pixels, pixels*2+1)-pixels/2)*(pixel_size)
+        theta = (pixel_size)*np.linspace(-pixels/2, pixels/2, 2*pixels+1)
         phi = theta
         
         beam_spec = BeamSpec(phi, theta, pixels**2)

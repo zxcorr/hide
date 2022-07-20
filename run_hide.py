@@ -13,8 +13,10 @@
 
 '''
 Created on August 1, 2018
-
 author: Lucas Olivari
+
+Last update: July, 2022
+authors: Joao Alberto, Carlos Otobone
 '''
 
 import numpy as np
@@ -35,7 +37,6 @@ bingo_model = 0 # either 0, 1 or 2
 # ==================================================================
 
 destination_path = '/usr/local/lib/python2.7/dist-packages/hide-0.1.0-py2.7.egg/hide/config/' # change to your destination (the place where your hide package is located within your python repository)
-#working_path = '/home/otobone/Documentos/ic/projeto_karin/hide-master/hide/config/' # change to your working path
 working_path = os.getcwd() + "/hide/config/"
 
 # ==================================================================
@@ -51,7 +52,10 @@ al_in = np.loadtxt('altitude.txt') # one horn -- one altitude [degree]
 
 dfile_short = 'bingo_horn'
 
-for i in range(0, az_in.size):
+initial_horn = 0
+final_horn = 1 #az_in.size
+
+for i in range(initial_horn, final_horn):
     destination = open(working_path + 'bingo_horn_' + str(i) + '.py', 'w')
     source = open(working_path + 'bingo.py', 'r')
     for line in source:
@@ -118,9 +122,9 @@ for i in range(0, az_in.size):
 # SETTING AND RUNNING HIDE
 # ==================================================================
 
-for i in range(0, az_in.size):
+for i in range(initial_horn, final_horn):
     print("\nExecuting horn {0}\n".format(i))
-    os.system('sudo cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
+    os.system('cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
     os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
 
 
