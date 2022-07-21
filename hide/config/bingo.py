@@ -50,9 +50,9 @@ plugins = ["hide.plugins.initialize",
                                                             "hide.plugins.reduce_frequency_plugin", 
 #                                                             parallel=False
                                                             ),
-                                    "hide.plugins.apply_gain",
-                                    "hide.plugins.add_background",
-                                    "hide.plugins.background_noise",
+                                    #"hide.plugins.apply_gain",
+                                    #"hide.plugins.add_background",
+                                    #"hide.plugins.background_noise",
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
                                      ],
@@ -76,9 +76,9 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 # OUTPUT
 # ==================================================================
-output_path = "/home/joao/Documentos/cosmologia/hide_and_seek/resultados/TOD/teste/"  # path to output folder
+output_path = "./"  # path to output folder
 overwrite = False
-file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file's name 
+file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
                    # it will be written by run_hide.py
 params_file_fmt
@@ -98,8 +98,8 @@ polarizations = ['PXX']
 #-----------------
 # BINGO
 #-----------------
-telescope_latitude = -7.0         # sul-norte              
-telescope_longitude = -38.0          # oeste-leste           
+telescope_latitude = -7.0
+telescope_longitude = -38.0
 
 telescope_elevation = 0.0        # altitude
 
@@ -112,12 +112,11 @@ beam_frequency_max = 1260.      # maximum frequency: [MHz]            #last poin
 beam_frequency_pixscale = 10.    # pixel scale (frequency/beam)
 beam_nside = 128                 # healpix NSIDE -- must be the same as that of the input sky maps
 beam_response = 1               # beam response [0..1]
-
-beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation and determine the beam support)
+beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
 beam_azimut = 2               # azimuth [degree] -- same as above
 
-# Gaussian Beam(gaussian)
-#dish_diameter = 40.             # effective diameter of the dish [m]
+# Gaussian (gaussian)
+dish_diameter = 40.             # effective diameter of the dish [m]
 # Gaussian FWHM (gaussian_fwhm)
 fwhm_0 = 0.011                   # FWHM for the minimum frequency
 # Zernike Beam (beamz)
@@ -152,7 +151,7 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ASTRO (SIGNAL)
 # ==================================================================
 astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
-astro_signal_file_name = "ame_cube_hs_test_celestial.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
+astro_signal_file_name = "ame_cube_hs_test_rot_kelvin.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
 astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 
 cache_astro_signals = True         # flag if loaded signals per frequency should be kept in memory
