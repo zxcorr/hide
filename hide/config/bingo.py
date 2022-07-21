@@ -119,15 +119,17 @@ beam_azimut = 2               # azimuth [degree] -- same as above
 dish_diameter = 40.             # effective diameter of the dish [m]
 # Gaussian FWHM (gaussian_fwhm)
 fwhm_0 = 0.011                   # FWHM for the minimum frequency
-
+# Zernike Beam (beamz)
+#zernike_coefficients_file_name = "data/Retangular_MINUS990_304.fits"
+#interpolation_scheme = "nearest" # [nearest, linear, cubic]
 
 
 # ==================================================================
 # SCANNING STRATEGY
 # ==================================================================
 scanning_strategy_provider = "hide.strategy.drift_scan" 
-strategy_start = "2018-01-03-00:00:00"     # survey start time. Format YYYY-mm-dd-HH:MM:SS
-strategy_end   = "2018-01-03-23:59:59"     # survey end time. Format YYYY-mm-dd-HH:MM:SS
+strategy_start = "2018-01-01-00:00:00"     # survey start time. Format YYYY-mm-dd-HH:MM:SS
+strategy_end   = "2018-01-01-23:59:59"     # survey end time. Format YYYY-mm-dd-HH:MM:SS
 strategy_step_size = 1                    # size of step in [sec]
 time_range = 60*60                        # time range per file [sec]
 coord_step_size = 1                        # step size in the coords file
