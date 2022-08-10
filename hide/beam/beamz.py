@@ -29,6 +29,7 @@ import os
 from pkg_resources import resource_filename
 import hide
 
+BEAM_FITS_PATH = "/data/"
 
 def load_beam_profile(beam_spec, frequencies, params):
         """
@@ -43,8 +44,9 @@ def load_beam_profile(beam_spec, frequencies, params):
         beam_profiles = []
         beam_norms = []
         Npoints = [len(beam_spec.ra),len(beam_spec.dec)]
-        
-        fits_path = resource_filename(hide.__name__, params.zernike_coefficients_file_name)
+
+        fits_file = os.path.join(BEAM_FITS_PATH, params.zernike_coefficients_file_name)
+        fits_path = resource_filename(hide.__name__, fits_file)#params.zernike_coefficients_file_name)
         with pyfits.open(fits_path) as zernike_fits:
                 Coeffs = zernike_fits[0].data
                 zernike_freqs = np.array([f[0] for f in zernike_fits[1].data])
@@ -60,7 +62,11 @@ def load_beam_profile(beam_spec, frequencies, params):
                         "coefficients file ({}-{} GHz).".format(np.amin(zernike_freqs),
                                                                                                         np.amax(zernike_freqs)))
         
-        Coeffs_interp = coeffs_interpolation(zernike_freqs, Coeffs, frequencies)
+        if set(frequencies).issubset(set(zernike_freqs)):
+                matching_freqs = np.array([f for f in frequencies if (zernike_freqs==f).any()])
+                Coeffs_interp = Coeffs[zernike_freqs==matching_freqs]
+        else:
+                Coeffs_interp = coeffs_interpolation(zernike_freqs, Coeffs, frequencies)
         beam_profiles = [zernike_wrapper(R, Coeffs_interp[f_idx],
                                                                          beam_spec, params.beam_response,
                                                                          params)
@@ -115,10 +121,10 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                                                                                                   (i,j),
                                                                                                   method=params.interpolation_scheme))
                 norm = np.sum(beam)#*hp.nside2pixarea(params.beam_nside, degrees=False)
-                beam /= norm
+                beam /= 2*norm*hp.nside2pixarea(params.beam_nside, degrees=False)
                 
-                plot=True
-                fits_writing = True
+                plot=False
+                fits_writing = False
                 field_directions_file = False
                 
                 if field_directions_file:
@@ -194,12 +200,12 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                 
                 if plot:
                 
-                        base_name = "beam_nside{nside}_{{interp}}".format(nside=params.beam_nside)
+                        base_name = "beam_nside{nside}_{{interp}}_pixarea_norm".format(nside=params.beam_nside)
                         if fits_writing:
                                 import astropy.io.fits as pyfits
                                 fitsfile = params.output_path + base_name + "_healpix.fits" #"/hide_beams/MINUS990_304/nside{nside}/healpix_MINUS990_304_beam_nside{nside}_{interp}.fits"
                                 # 30_MINUS304
-                        
+                        pixarea = hp.nside2pixarea(params.beam_nside, degrees=False)
                         import matplotlib.pyplot as plt
 
                         # Grid Plotting
@@ -226,18 +232,19 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                         plt.savefig(params.output_path + base_name.format(interp="preinterp") + ".png")
                         
                         # Pre-Interp Normalised Beam
-                        norm_beam_0 = beam_0/np.sum(beam_0)
+                        norm_beam_0 = beam_0/np.sum(beam_0)/pixarea
                         vmin = 20*np.log10(min(abs(norm_beam_0[np.nonzero(abs(norm_beam_0))])))
                         vmax = 20*np.log10(max(abs(norm_beam_0)))
                         plt.figure(2)
                         plt.pcolormesh(ra.reshape(new_shape),
-                                                   dec.reshape(new_shape),
-                                                   20*np.log10(abs(norm_beam_0)).reshape(new_shape), 
-                                                   shading="auto", vmin=vmin, vmax=vmax)
+                                       dec.reshape(new_shape),
+                                       20*np.log10(abs(norm_beam_0)).reshape(new_shape), 
+                                       #norm_beam_0.reshape(new_shape),
+                                       shading="auto", vmin=vmin, vmax=vmax)
                         plt.title("HIDE Beam - Pre Interp Normalised Beam")
                         plt.xlabel("Dec (rad)")
                         plt.ylabel("RA (rad)")
-                        plt.colorbar(label="Amplitude (dB)")
+                        plt.colorbar(label="Intensity")#"Amplitude (dB)")
                         plt.savefig(params.output_path + base_name.format(interp="preinterp_norm") + ".png")
                         
                         
@@ -263,7 +270,7 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                                                                                                           beam_0,
                                                                                                           (i,j),
                                                                                                           method="nearest"))
-                        norm = np.sum(beam)
+                        norm = np.sum(beam)*pixarea
                         beam /= norm
                         plt.figure(4)
                         theta, phi = np.pi/2+i, j
@@ -286,7 +293,7 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                                                                                                           beam_0,
                                                                                                           (i,j),
                                                                                                           method="linear"))
-                        norm = np.sum(beam)
+                        norm = np.sum(beam)*pixarea
                         beam /= norm
                         plt.figure(5)
                         theta, phi = np.pi/2+i, j
@@ -309,7 +316,7 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                                                                                                           beam_0,
                                                                                                           (i,j),
                                                                                                           method="cubic"))
-                        norm = np.sum(beam)
+                        norm = np.sum(beam)*pixarea
                         beam /= norm
                         plt.figure(6)
                         theta, phi = np.pi/2+i, j
