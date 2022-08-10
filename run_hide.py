@@ -36,8 +36,9 @@ bingo_model = 0 # either 0, 1 or 2
 # CHOOSE DESTINATION AND WORKING PATHS
 # ==================================================================
 
+import hide
 
-destination_path = '/usr/local/lib/python3.8/dist-packages/hide-0.1.0-py3.8.egg/hide/config/' # change to your destination (the place where your hide package is located within your python repository)
+destination_path = os.path.join(hide.__path__[0], '/hide/config/') # change to your destination (the place where your hide package is located within your python repository)
 working_path = os.getcwd() + "/hide/config/"
 
 # ==================================================================
