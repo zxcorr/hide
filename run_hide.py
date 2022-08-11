@@ -54,8 +54,9 @@ al_in = np.loadtxt('altitude.txt') # one horn -- one altitude [degree]
 
 dfile_short = 'bingo_horn'
 
-initial_horn = 0
-final_horn = 1 #az_in.size
+initial_horn, final_horn = 2, 3 
+#az_in.size
+
 
 for i in range(initial_horn, final_horn):
     destination = open(working_path + 'bingo_horn_' + str(i) + '.py', 'w')
