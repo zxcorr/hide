@@ -1,4 +1,5 @@
 *.py[cod]
+.hope*
 bingo_horn_*
 /hide/data/*.fits
 /hide/data/sky/*
