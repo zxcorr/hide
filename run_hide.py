@@ -21,6 +21,15 @@ authors: Joao Alberto, Carlos Otobone
 
 import numpy as np
 import os
+import sys
+
+abspath = os.path.abspath(__file__)
+cwd = os.path.dirname(abspath)
+os.chdir(cwd)
+
+popped_cwd = sys.path.pop(0) #prevents from importing local hide
+import hide
+sys.path.insert(0, popped_cwd)
 
 ####################################################################
 #### THIS IS THE SCRIPT THAT WILL RUN HIDE FOR EACH HORN
@@ -36,10 +45,8 @@ bingo_model = 0 # either 0, 1 or 2
 # CHOOSE DESTINATION AND WORKING PATHS
 # ==================================================================
 
-import hide
-
-destination_path = os.path.join(hide.__path__[0], '/hide/config/') # change to your destination (the place where your hide package is located within your python repository)
-working_path = os.getcwd() + "/hide/config/"
+destination_path = os.path.join(hide.__path__[0], 'config/') # change to your destination (the place where your hide package is located within your python repository)
+working_path = cwd + "/hide/config/"
 
 # ==================================================================
 # HORNS AZIMUTH AND ALTITUDE (ELEVATION)
@@ -52,15 +59,25 @@ al_in = np.loadtxt('altitude.txt') # one horn -- one altitude [degree]
 # SETTING THE CONFIG FILES FOR EACH HORN
 # ==================================================================
 
-dfile_short = 'bingo_horn'
+# argv: base_file new_files horn_i horn_f
+if len(os.sys.argv)>1:
+	base_file = os.sys.argv[1] # base file, as "bingo.py"
+	dfile_short = os.sys.argv[2] # new files fmt, as "bingo_horn_{}"
+	initial_horn = int(os.sys.argv[3])
+	final_horn = int(os.sys.argv[4])
+else:
+	base_file = "bingo.py"
+	dfile_short = 'bingo_horn_{}'
+	initial_horn = 2
+	final_horn = 3 #az_in.size
+	
+dfile_short_py = dfile_short + '.py'
 
-initial_horn, final_horn = 2, 3 
-#az_in.size
 
 
 for i in range(initial_horn, final_horn):
-    destination = open(working_path + 'bingo_horn_' + str(i) + '.py', 'w')
-    source = open(working_path + 'bingo.py', 'r')
+    destination = open(working_path + dfile_short_py.format(i), 'w')
+    source = open(working_path + base_file, 'r')
     for line in source:
         if line == 'coordinate_file_fmt\n':
             destination.write('coordinate_file_fmt = "coord_bingo_' + 
@@ -127,7 +144,7 @@ for i in range(initial_horn, final_horn):
 
 for i in range(initial_horn, final_horn):
     print("\nExecuting horn {0}\n".format(i))
-    os.system('cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
-    os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
+    os.system('cp ' + working_path + dfile_short_py.format(i) + ' ' + destination_path)
+    #os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
 
 

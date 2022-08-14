@@ -128,8 +128,8 @@ fwhm_0 = 0.011                   # FWHM for the minimum frequency
 # SCANNING STRATEGY
 # ==================================================================
 scanning_strategy_provider = "hide.strategy.drift_scan" 
-strategy_start = "2018-01-01-00:00:00"     # survey start time. Format YYYY-mm-dd-HH:MM:SS
-strategy_end   = "2018-01-01-23:59:59"     # survey end time. Format YYYY-mm-dd-HH:MM:SS
+strategy_start = '2018-01-05-00:00:00' # survey start time. Format YYYY-mm-dd-HH:MM:SS
+strategy_end = '2018-01-05-23:59:59'   # survey start time. Format YYYY-mm-dd-HH:MM:SS
 strategy_step_size = 1                    # size of step in [sec]
 time_range = 60*60                        # time range per file [sec]
 coord_step_size = 1                        # step size in the coords file
