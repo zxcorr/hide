@@ -76,7 +76,7 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 # OUTPUT
 # ==================================================================
-output_path = "./"  # path to output folder
+output_path = "/scratch/bingo/joao.barretos/hide_and_seek/resultados/TOD/zernike_all_beams/"  # path to output folder
 overwrite = False
 file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
@@ -106,30 +106,30 @@ telescope_elevation = 0.0        # altitude
 # ==================================================================
 # BEAM
 # ==================================================================
-beam_profile_provider = "hide.beam.gaussian_fwhm"  
+beam_profile_provider = "hide.beam.beamz"  
 beam_frequency_min = 980.       # minimum frequency: [MHz]
-beam_frequency_max = 1260.      # maximum frequency: [MHz]            #last point discarted
+beam_frequency_max = 990#1260.      # maximum frequency: [MHz]            #last point discarted
 beam_frequency_pixscale = 10.    # pixel scale (frequency/beam)
-beam_nside = 128                 # healpix NSIDE -- must be the same as that of the input sky maps
+beam_nside = 256                 # healpix NSIDE -- must be the same as that of the input sky maps
 beam_response = 1               # beam response [0..1]
-beam_elevation = 2          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
-beam_azimut = 2               # azimuth [degree] -- same as above
+beam_elevation = 6          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
+beam_azimut = 6               # azimuth [degree] -- same as above
 
 # Gaussian (gaussian)
-dish_diameter = 40.             # effective diameter of the dish [m]
+#dish_diameter = 40.             # effective diameter of the dish [m]
 # Gaussian FWHM (gaussian_fwhm)
-fwhm_0 = 0.011                   # FWHM for the minimum frequency
+#fwhm_0 = 0.011                   # FWHM for the minimum frequency
 # Zernike Beam (beamz)
-#zernike_coefficients_file_name = "data/Retangular_MINUS990_304.fits"
-#interpolation_scheme = "nearest" # [nearest, linear, cubic]
+zernike_coefficients_file_name = "/data/{}"
+interpolation_scheme = "nearest" # [nearest, linear, cubic]
 
 
 # ==================================================================
 # SCANNING STRATEGY
 # ==================================================================
 scanning_strategy_provider = "hide.strategy.drift_scan" 
-strategy_start = "2018-01-01-00:00:00"     # survey start time. Format YYYY-mm-dd-HH:MM:SS
-strategy_end   = "2018-01-01-23:59:59"     # survey end time. Format YYYY-mm-dd-HH:MM:SS
+strategy_start = '2018-01-01-00:00:00' # survey start time. Format YYYY-mm-dd-HH:MM:SS
+strategy_end = '2018-01-01-23:59:59'   # survey start time. Format YYYY-mm-dd-HH:MM:SS
 strategy_step_size = 1                    # size of step in [sec]
 time_range = 60*60                        # time range per file [sec]
 coord_step_size = 1                        # step size in the coords file
@@ -151,7 +151,7 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ASTRO (SIGNAL)
 # ==================================================================
 astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
-astro_signal_file_name = "ame_cube_hs_test_rot_kelvin.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
+astro_signal_file_name = "delta_L0_256.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
 astro_signal_freq_file_name = "freqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 
 cache_astro_signals = True         # flag if loaded signals per frequency should be kept in memory

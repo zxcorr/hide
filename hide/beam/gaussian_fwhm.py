@@ -65,8 +65,8 @@ def gauss_wrapper(sigma, beam_response, params):
 		Z = np.empty_like(i)
 		hope_gauss(i2sigma2, beam_response, i, j, Z)
 		
-		plot_beam = True
-		fits_writting = True
+		plot_beam = False
+		fits_writting = False
 		if plot_beam:
 			base_name = "beam_nside{nside}_gauss".format(nside=params.beam_nside)
 			if fits_writting:
