@@ -6,6 +6,6 @@ six
 h5py
 mock
 pyephem
-healpy == 1.13.0
+healpy
 astropy
 
