@@ -16,6 +16,9 @@
 Created on Dec 8, 2014
 
 author: jakeret
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
@@ -38,18 +41,8 @@ class Plugin(BasePlugin):
         normalization = self.ctx.beam_norm # *.5
         for beam in self.ctx.beams:
             pixel_idxs = beam.pixel_idxs
-            #with open('/scratch/bingo/thiago.pena/extra/beam_test/results_hide/txt/idx.txt', 'w') as txt:
-            #    for elem in pixel_idxs:
-            #        txt.write(str(elem)+'\n')
-            #    txt.write('FIM')
-            
             
             beam_response = beam_profile(beam.dec, beam.ra)
-            #with open('/scratch/bingo/thiago.pena/extra/beam_test/results_hide/txt/beam_response.txt','w') as txt:
-            #    for elem in beam_response:
-            #        txt.write(str(elem)+'\n')
-            #    txt.write('FIM')
-            
             
             #beam_response = normalization * beam_profile(beam.dec, beam.ra) 
             signal = (beam_response * combined_signals[pixel_idxs]).sum()
