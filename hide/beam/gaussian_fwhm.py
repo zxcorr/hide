@@ -16,6 +16,9 @@
 Created on Dec 8, 2014
 
 author: jakeret
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
