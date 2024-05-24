@@ -16,6 +16,9 @@
 Created on Dec 16, 2015
 
 author: seehars
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
