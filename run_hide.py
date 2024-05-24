@@ -17,6 +17,9 @@ author: Lucas Olivari
 
 Last update: July, 2022
 authors: Joao Alberto, Carlos Otobone
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 
 import numpy as np
