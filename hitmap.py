@@ -2,9 +2,13 @@
 
 '''
 Created on 08/2020
-Last update 04/05/2021
 
+Update 04/05/2021
 Author: Carlos Otobone, João Alberto
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
+
 '''
 from __future__ import print_function
 import numpy as np
