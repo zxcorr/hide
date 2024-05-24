@@ -15,6 +15,7 @@
 '''
 Created on Nov 10, 2015
 Modified on August, 2018 by Lucas Olivari
+Modified on May, 2024 by Alessandro Marins and Thiago Pena
 
 authors: jakeret, Lucas Olivari
 '''
