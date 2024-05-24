@@ -18,6 +18,9 @@ author: Lucas Olivari
 
 Modified on 2022
 authors: Joao Alberto, Carlos Otobone
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 
 from __future__ import print_function, division, absolute_import, unicode_literals
@@ -35,24 +38,24 @@ import numpy as np
 # THE PLUGINS DIRECTORY -- FEEL FREE TO ADD OR REMOVE PLUGINS
 # ==================================================================
 plugins = ["hide.plugins.initialize",
-           "hide.plugins.load_beam_profile", #
+           "hide.plugins.load_beam_profile", 
            "hide.plugins.scanning_strategy",
            "hide.plugins.write_coords",
            "hide.plugins.write_calibration",
            ParallelPluginCollection([
                                     "hide.plugins.qu_opt_coord_transform",
                                      ParallelPluginCollection([
-                                                            "hide.plugins.astro_signal",#
+                                                            "hide.plugins.astro_signal",
                                                             "hide.plugins.earth_signal",
-                                                            "hide.plugins.combine_signals", #MODIFIQUEI, 11/2023
+                                                            "hide.plugins.combine_signals", 
                                                              ],
-                                                            "hide.plugins.map_frequency_plugin",#
-                                                            "hide.plugins.reduce_frequency_plugin",# 
+                                                            "hide.plugins.map_frequency_plugin",
+                                                            "hide.plugins.reduce_frequency_plugin",#
 #                                                             parallel=False
                                                             ),
                                     #"hide.plugins.apply_gain",
                                     "hide.plugins.add_background",           
-                                    "hide.plugins.background_noise",			# FOR WHITE NOISE
+                                    "hide.plugins.background_noise",			
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
                                      ],
