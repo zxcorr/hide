@@ -16,6 +16,9 @@
 Created on 2021
 
 authors: Joao Alberto, Bruno Ponquio
+
+Update: May, 2024
+authors: Thiago Pena
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
