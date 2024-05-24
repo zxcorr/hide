@@ -35,15 +35,28 @@ class Plugin(BasePlugin):
         combined_signals = self.ctx.astro_signal + self.ctx.earth_signal
         
         # TODO: factor 1/2 for polarization is now put in here
-        normalization = .5 * self.ctx.beam_norm
+        normalization = self.ctx.beam_norm # *.5
         for beam in self.ctx.beams:
             pixel_idxs = beam.pixel_idxs
+            #with open('/scratch/bingo/thiago.pena/extra/beam_test/results_hide/txt/idx.txt', 'w') as txt:
+            #    for elem in pixel_idxs:
+            #        txt.write(str(elem)+'\n')
+            #    txt.write('FIM')
+            
             
             beam_response = beam_profile(beam.dec, beam.ra)
+            #with open('/scratch/bingo/thiago.pena/extra/beam_test/results_hide/txt/beam_response.txt','w') as txt:
+            #    for elem in beam_response:
+            #        txt.write(str(elem)+'\n')
+            #    txt.write('FIM')
+            
+            
+            #beam_response = normalization * beam_profile(beam.dec, beam.ra) 
             signal = (beam_response * combined_signals[pixel_idxs]).sum()
             
             signals.append(normalization * signal)
-        
+            #signals.append(signal)
+
         self.ctx.signals = signals
     
     def __str__(self):

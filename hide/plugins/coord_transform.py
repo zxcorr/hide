@@ -26,6 +26,11 @@ from ivy.plugin.base_plugin import BasePlugin
 from hide.utils import sphere
 from hide.beam import ResponseSpec
 
+
+from hide.beam.gaussian_fwhm import
+
+
+
 class Plugin(BasePlugin):
     """
     Applies the coordination transformation to the beam profile by rotating 
@@ -67,7 +72,7 @@ class Plugin(BasePlugin):
     def __str__(self):
         return "Coord transformation"
     
-def plot_beam(beam_spec, coord_ra, coord_dec, rphis, rthetas, ras, decs):
+def plot_beam(beam_spec, coord_ra, coord_dec, rphis, rthetas, ras, decs,save=False,output_path=None):
     import matplotlib.pyplot as plt
     plt.figure(figsize=(12,5))
     plt.suptitle("RA: {0:>.4f}, DEC: {1:>.4f}".format(coord_ra, coord_dec))
@@ -87,4 +92,8 @@ def plot_beam(beam_spec, coord_ra, coord_dec, rphis, rthetas, ras, decs):
 
     plt.xlabel("phi / ra")
     plt.ylabel("theta / dec")
-    plt.show()   
+    if save:
+        if output_path==None: output_path = 'fig.png'
+        plt.savefig(output_path,dpi=100,bbox_inches='tight')
+    else:
+        plt.show()   

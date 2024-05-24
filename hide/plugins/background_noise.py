@@ -53,7 +53,7 @@ class Plugin(BasePlugin):
 
         #noise = get_noise(params.white_noise_scale, params.color_noise_amp, params.color_noise_beta, size)
 
-        noise = get_noise_lucas(wn_scale, params.color_alpha, params.color_fknee, params.color_beta, params.sample_freq, params.temp_sys, params.delta_nu, size)
+        noise = get_noise_lucas(wn_scale, params.color_alpha, params.color_fknee, params.color_beta, params.sample_freq, params.temp_sys, params.delta_nu, size,params)
         
         self.ctx.tod_vx += noise
         #TODO: no noise for Y-polarization
@@ -72,21 +72,21 @@ def get_noise(scale, alpha, beta, size):
     else:
         return wnoise
 
-def get_noise_lucas(scale_adu, alpha, fknee, beta, sfreq, tempsys, deltanu, size):
+def get_noise_lucas(scale_adu, alpha, fknee, beta, sfreq, tempsys, deltanu, size, params):
 
     n_nu = size[0]
     samples = size[1]
     
     wnoise = np.zeros((n_nu, samples))
-
+    #params = self.ctx.params 
     for i in range(0, n_nu):
-        wnoise[i, :] = thermal_noise_tod(sfreq, size)
+        wnoise[i, :] = thermal_noise_tod(sfreq, size, params)
 
     wnoise_norm = np.std(wnoise) # We must normalize our TOD
 
     wnoise = np.mean(scale_adu) * noise_amplitude(deltanu, tempsys) * (wnoise / wnoise_norm)
     
-    rnoise = np.mean(scale_adu) * noise_amplitude(deltanu, tempsys) * (color_noise_tod(alpha, fknee, beta, deltanu, sfreq, size) / wnoise_norm)
+    #rnoise = np.mean(scale_adu) * noise_amplitude(deltanu, tempsys) * (color_noise_tod(alpha, fknee, beta, deltanu, sfreq, size) / wnoise_norm)
     
     # it always simulate colored noise
-    return wnoise + rnoise
+    return wnoise# + rnoise

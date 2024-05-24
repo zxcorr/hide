@@ -29,7 +29,7 @@ import os
 from pkg_resources import resource_filename
 import hide
 
-BEAM_FITS_PATH = "/data/"
+BEAM_FITS_PATH = "/data/1.123deg_fit/beta22/"
 
 def load_beam_profile(beam_spec, frequencies, params):
         """
@@ -48,10 +48,12 @@ def load_beam_profile(beam_spec, frequencies, params):
         fits_file = os.path.join(BEAM_FITS_PATH, params.zernike_coefficients_file_name)
         fits_path = resource_filename(hide.__name__, fits_file)#params.zernike_coefficients_file_name)
         with pyfits.open(fits_path) as zernike_fits:
-                Coeffs = zernike_fits[0].data
+                Coeffs_unsorted = zernike_fits[0].data
                 zernike_freqs = np.array([f[0] for f in zernike_fits[1].data])
+                Coeffs = [x for _,x in sorted(zip(zernike_freqs, Coeffs_unsorted))]
+                zernike_freqs.sort()
                 R = float(zernike_fits[0].header["RADIUS"])
-                
+
         assert (R<=np.amax(beam_spec.dec) and 
                         R<=np.amax(beam_spec.ra)), \
                         ("Beam support must be greater than "
@@ -61,12 +63,13 @@ def load_beam_profile(beam_spec, frequencies, params):
                         ("Frequency range chosen is out of the frequency range given by the Zernike"
                         "coefficients file ({}-{} GHz).".format(np.amin(zernike_freqs),
                                                                                                         np.amax(zernike_freqs)))
-        
         if set(frequencies).issubset(set(zernike_freqs)):
                 matching_freqs = np.array([f for f in frequencies if (zernike_freqs==f).any()])
-                Coeffs_interp = Coeffs[zernike_freqs==matching_freqs]
+                Coeffs_interp = np.array(Coeffs)[zernike_freqs==matching_freqs]
         else:
                 Coeffs_interp = coeffs_interpolation(zernike_freqs, Coeffs, frequencies)
+
+
         beam_profiles = [zernike_wrapper(R, Coeffs_interp[f_idx],
                                                                          beam_spec, params.beam_response,
                                                                          params)
@@ -121,7 +124,7 @@ def zernike_wrapper(R, Coeffs, beam_spec, beam_response, params):
                                                                                                   (i,j),
                                                                                                   method=params.interpolation_scheme))
                 norm = np.sum(beam)#*hp.nside2pixarea(params.beam_nside, degrees=False)
-                beam /= 2*norm*hp.nside2pixarea(params.beam_nside, degrees=False)
+                beam /= norm #2*norm*hp.nside2pixarea(params.beam_nside, degrees=False)
                 
                 plot=False
                 fits_writing = False

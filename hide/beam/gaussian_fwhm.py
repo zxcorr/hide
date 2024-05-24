@@ -36,7 +36,7 @@ def load_beam_profile(beam_spec, frequencies, params):
 	beam_profiles = []
 	beam_norms = []
 	for k, frequency in enumerate(frequencies):
-		fwhm = params.fwhm_0 * params.beam_frequency_min / frequency
+		fwhm = params.fwhm_0 # * params.beam_frequency_min / frequency
 		sigma = fwhm2sigma(fwhm) #fwhm / (2. * np.sqrt(2. * np.log(2)))
 		beam_norms.append(normalization(sigma, params.beam_nside))
 		beam_profiles.append(gauss_wrapper(sigma, params.beam_response, params))
@@ -65,8 +65,14 @@ def gauss_wrapper(sigma, beam_response, params):
 		Z = np.empty_like(i)
 		hope_gauss(i2sigma2, beam_response, i, j, Z)
 		
-		plot_beam = True
-		fits_writting = True
+		#print(i)
+		#print(j)
+		#print(Z)
+
+
+		
+		plot_beam = False #True
+		fits_writting = False #True
 		if plot_beam:
 			base_name = "beam_nside{nside}_gauss".format(nside=params.beam_nside)
 			if fits_writting:
@@ -96,7 +102,7 @@ def gauss_wrapper(sigma, beam_response, params):
 	return wrapped
 
 def normalization(sigma, nside):
-	n = (4 * np.pi) * sigma * sigma
+	n = (2 * np.pi) * sigma * sigma
 	pixarea = hp.nside2pixarea(nside, degrees=False)
 	return pixarea/n
 

@@ -31,7 +31,7 @@ import os
 # CHOOSE DESTINATION PATHS
 # ==================================================================
 
-destination_path = '/usr/local/lib/python2.7/dist-packages/hide-0.1.0-py2.7.egg/hide/data/' # change to your destination (the place where your hide package is located within your python repository)
+destination_path = '/scratch/bingo/thiago.pena/extra/venv/lib/python3.8/site-packages/hide-0.1.0-py3.8.egg/hide/data/' # change to your destination (the place where your hide package is located within your python repository)
 
 # ==================================================================
 # READ IN BLEIEN INFO
@@ -43,7 +43,7 @@ rfi_in = np.loadtxt("rfi_template_7m_FFT_ADU.dat") # for completeness
 # BINGO PARAMETERS
 # ==================================================================
 
-number_horns = 5 # number of horns to be simulated
+number_horns = 140 # number of horns to be simulated
 freq_min = 960. # minimun frequency, in MHz
 freq_bin = 10. # fequency bin, in MHz
 n_channels = 30 # number of channels
