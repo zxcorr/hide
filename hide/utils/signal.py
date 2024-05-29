@@ -15,6 +15,7 @@
 '''
 Created on Nov 10, 2015
 Modified on August, 2018 by Lucas Olivari
+Modified on May, 2024 by Alessandro Marins and Thiago Pena
 
 authors: jakeret, Lucas Olivari
 '''
@@ -23,11 +24,12 @@ from __future__ import division
 
 import numpy as np
 
+
 def noise_amplitude(delta_nu, t_sys):
 
     return t_sys / np.sqrt(delta_nu)
 
-def thermal_noise_tod(sfreq, size):
+def thermal_noise_tod(sfreq, size, params):
 
     samples = size[1]
 
@@ -40,6 +42,7 @@ def thermal_noise_tod(sfreq, size):
     s_scale = 1. + np.zeros(s_scale.size)
     
     # scale random power + phase
+    np.random.seed(params.seed)
     sr = s_scale * np.random.normal(size=len(s_scale))
     si = s_scale * np.random.normal(size=len(s_scale))
     if not (samples % 2): si[0] = si[0].real
@@ -94,7 +97,7 @@ def color_noise_tod(alpha, fknee, beta, delta_nu, sfreq, size):
     test_out = np.zeros((n_nu, samples), dtype=np.complex64)	
 
     for s in range(0, samples):
-	test_out[:, s] = np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1]]) #np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1].conj()]) 
+        test_out[:, s] = np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1]]) #np.concatenate([(test[:, s])[1-(n_nu % 2):][::-1], (test[:, s])[:-1].conj()]) 
 		
     # time series -- note the normalization
     y = np.fft.ifftn(test_out).real * np.sqrt(n_nu)

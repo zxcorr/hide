@@ -58,6 +58,7 @@ class Plugin(BasePlugin):
         self.ctx.frequencies = frequencies
         self.ctx.beam_profiles = beam_profiles
         self.ctx.beam_norms = beam_norms
-    
+
+ 
     def __str__(self):
         return "Load beam profile"

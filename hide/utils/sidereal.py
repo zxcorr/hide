@@ -559,13 +559,13 @@ def parseFloatSuffix ( s, codeRe, message ):
           case-insensitive comparison) ->
             return (x, tail) where x is that float as type float
             and tail is the part of s after the float and code
-          else -> raise SyntaxError, "Expecting (message)" ]
+          else -> raise SyntaxError ("Expecting (message)") ]
     """
     #-- 1 --
     # [ if  s starts with a float ->
     #     x  :=  that float as type float
     #     codeTail  :=  the part of s after that float
-    #   else -> raise SyntaxError, "Expecting (message)" ]
+    #   else -> raise SyntaxError ("Expecting (message)") ]
     x, codeTail  =  parseFloat ( s, message )
 
     #-- 2 --
@@ -586,7 +586,7 @@ def parseFloat ( s, message ):
           if s begins with a floating-point number ->
             return (x, tail) where x is the number as type float
             and tail is the part of s after the match
-          else -> raise SyntaxError, "Expecting (message)" ]
+          else -> raise SyntaxError ("Expecting (message)")) ]
     """
     #-- 1 --
     # [ if the front of s matches FLOAT_PAT ->
@@ -608,13 +608,13 @@ def parseRe ( s, regex, message ):
             return (head, tail) where head is the part of s
             that matched and tail is the rest
           else ->
-            raise SyntaxError, "Expecting (message)" ]
+            raise SyntaxError ("Expecting (message)") ]
     """
 
     #-- 1 --
     # [ if the head of s matches regex ->
     #     m  :=  a match object describing the matching part
-    #   else -> raise SyntaxError, "Expecting (message)" ]
+    #   else -> raise SyntaxError ("Expecting (message)") ]
     m  =  regex.match ( s )
     if  m is None:
         raise SyntaxError ("Expecting %s: '%s'" % (message, s))

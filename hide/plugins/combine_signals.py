@@ -16,6 +16,9 @@
 Created on Dec 8, 2014
 
 author: jakeret
+
+Update: May, 2024
+authors: Alessandro Marins, Thiago Pena
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
@@ -35,15 +38,18 @@ class Plugin(BasePlugin):
         combined_signals = self.ctx.astro_signal + self.ctx.earth_signal
         
         # TODO: factor 1/2 for polarization is now put in here
-        normalization = .5 * self.ctx.beam_norm
+        normalization = self.ctx.beam_norm # *.5
         for beam in self.ctx.beams:
             pixel_idxs = beam.pixel_idxs
             
             beam_response = beam_profile(beam.dec, beam.ra)
+            
+            #beam_response = normalization * beam_profile(beam.dec, beam.ra) 
             signal = (beam_response * combined_signals[pixel_idxs]).sum()
             
             signals.append(normalization * signal)
-        
+            #signals.append(signal)
+
         self.ctx.signals = signals
     
     def __str__(self):

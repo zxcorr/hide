@@ -1,4 +1,9 @@
 *.py[cod]
+.hope*
+bingo_horn_*
+/hide/data/*.fits
+/hide/data/sky/*
+!/hide/data/sky/freqs_bingo.fits
 
 # C extensions
 *.so

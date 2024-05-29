@@ -28,6 +28,9 @@ from hide.utils import sphere
 from hide.utils import quaternion as qu
 from hide.beam import ResponseSpec
 
+from hide.utils import parse_datetime
+import os
+
 class Plugin(BasePlugin):
     """
     Applies the coordination transformation to the beam profile by rotating 
@@ -41,10 +44,13 @@ class Plugin(BasePlugin):
         idx = np.arange(hp.nside2npix(nside))
         thetas, phis = hp.pix2ang(nside, idx)
         tree = sphere.ArcKDTree(thetas, phis)
-        
+        import sys
+        output_path = self.ctx.params.output_path
         beams = []
         for coord in self.ctx.strategy_coords:
             coord_ra, coord_dec = coord[3], coord[4]
+            
+            
             
             #rotate to scanning strategy pos
             _, field_idx = tree.query(sphere.dec2theta(coord_dec), sphere.ra2phi(coord_ra), beam_spec.pixels)
@@ -65,9 +71,15 @@ class Plugin(BasePlugin):
             
             plot=False
             if plot:
+                name = 'RA{}_DEC{}_100000.png'.format(int(100000*coord_ra), int(100000*coord_dec))
+                file_path = output_path + 'beams_test/'
+                if not os.path.exists(file_path):
+                    os.makedirs(file_path)
+                file_name = file_path + name
+
                 from hide.plugins import coord_transform
                 rthetas, rphis = sphere.vec2dir(vec)
-                coord_transform.plot_beam(beam_spec, coord_ra, coord_dec, rphis, rthetas, ras, decs)
+                coord_transform.plot_beam(beam_spec, coord_ra, coord_dec, rphis, rthetas, ras, decs, save=True, output_path=file_name)
                 
         self.ctx.beams = beams
 
