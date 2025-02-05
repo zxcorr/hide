@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with HIDE.  If not, see <http://www.gnu.org/licenses/>.
 
-
 '''
 Created on August, 2018
 author: Lucas Olivari
@@ -21,6 +20,9 @@ authors: Joao Alberto, Carlos Otobone
 
 Update: May, 2024
 authors: Alessandro Marins, Thiago Pena
+
+Update: November, 2024
+authors: Alessandro Marins, Luiza Ponte
 '''
 
 from __future__ import print_function, division, absolute_import, unicode_literals
@@ -55,7 +57,7 @@ plugins = ["hide.plugins.initialize",
                                                             ),
                                     #"hide.plugins.apply_gain",
                                     "hide.plugins.add_background",           
-                                    "hide.plugins.background_noise",			
+                                    #"hide.plugins.background_noise",			
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
                                      ],
@@ -69,7 +71,7 @@ plugins = ["hide.plugins.initialize",
 # GENERAL
 # ==================================================================
 
-seed0 = 2700
+seed0 = 7400001
 
 verbose = True
 cpu_count = 1
@@ -81,7 +83,7 @@ script_filename = os.path.realpath(__file__)
 # ==================================================================
 # OUTPUT
 # ==================================================================
-output_path = "/scratch/bingo/thiago.pena/extra/beam_test/240412/seedtest{}/".format(seed0)  # path to output folder
+output_path = "/path/to/output/folder/"
 overwrite = True
 file_fmt = "bingo_tod_horn_{mode}_{date}.h5"     # tod file name 
 coordinate_file_fmt
@@ -113,18 +115,22 @@ telescope_elevation = 0.0        # altitude
 # ==================================================================
 #beam_profile_provider = "hide.beam.beamz"
 beam_profile_provider = "hide.beam.gaussian_fwhm"  
-beam_frequency_min = 960.       # minimum frequency: [MHz]
-beam_frequency_max = 1260.      # maximum frequency: [MHz]            #last point discarted
-beam_frequency_pixscale = 10.    # pixel scale (frequency/beam)
+beam_frequency_min = 980.       # minimum frequency: [MHz]
+#beam_frequency_min = 960
+beam_frequency_max = 1260.       # maximum frequency: [MHz]            #last point discarted
+#beam_frequency_pixscale = 9.33  # pixel scale (frequency/beam)
+#beam_frequency_pixscale = 10
+beam_number_channels = 30        # number of channels
+beam_decimals = 2                # decimals for frequency
 beam_nside = 256                 # healpix NSIDE -- must be the same as that of the input sky maps
-beam_response = 1               # beam response [0..1]
-beam_elevation = 5          # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
-beam_azimut = 5               # azimuth [degree] -- same as above
+beam_response = 1                # beam response [0..1]
+beam_elevation = 5               # elevation [degree] -- to calculate the beam area (not physical, just to find the pixels for calculation)
+beam_azimut = 5                  # azimuth [degree] -- same as above
 
 # Gaussian (gaussian)
 dish_diameter = 40.             # effective diameter of the dish [m]
 # Gaussian FWHM (gaussian_fwhm)
-fwhm_0 = 0.011                  # FWHM for the minimum frequency
+fwhm_0 = 0.0116                 # FWHM for the minimum frequency
 # Zernike Beam (beamz)
 zernike_coefficients_file_name = "DoubleRectangular_hornX_displacementY.fits"
 interpolation_scheme = "nearest" # [nearest, linear, cubic]
@@ -156,9 +162,9 @@ altitude_max_pos = 90.0                    # max position in altitude direction 
 # ==================================================================
 # ASTRO (SIGNAL)
 # ==================================================================
-astro_signal_provider = "hide.astro.hi_sky"    # it will read the SKY maps
-astro_signal_file_name = "sky_960mhz1260mhz_nch30_mk_fullsky_nonoise_nobeam.fits" # maps (n_channels vs n_pixels) file name, located in the data/sky directory
-astro_signal_freq_file_name = "oldfreqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
+astro_signal_provider = "hide.astro.hi_sky"         # it will read the SKY maps
+astro_signal_file_name = "SKY_I_256_980mhz1260mhz_30bins_full_L0001.fits"
+astro_signal_freq_file_name = "newfreqs_bingo.fits" # frequency (n_channels) file name, located in the data/sky directory
 
 cache_astro_signals = True         # flag if loaded signals per frequency should be kept in memory
 
@@ -175,19 +181,19 @@ earth_signal_flux = 0              # flux of constant earth signal
 # ==================================================================
 # BACKGROUND -- AKERET ET AL. (2017) MODEL
 # ==================================================================
-elevation_model = [0., 0., 0.] # chose [1, -1., 1.] for model 1 and [1.26321397e+10, -1.71282810e+10, 2.79280833e+10] for model 2
+elevation_model = [0., 0., 0.] # chose [0.,0.,0.] for model 0, [1, -1., 1.] for model 1 and [1.26321397e+10, -1.71282810e+10, 2.79280833e+10] for model 2
 
 # ==================================================================
 # NOISE -- HARPER ET AL. (2018) MODEL
 # ==================================================================
 load_noise_template = False
-temp_sys = 70                   # system temperature, in K
-year_adj = 0.0523424      # 1/sqrt(365), adjusting noise amplitude from 1d to 1y
-temp_sys  *= year_adj
-delta_nu = 10*1e6                   # channel width, in Hz
-color_alpha = 0                  # 1 /f alpha parameter
-color_fknee = 1                 # 1/ f knee frequency, in Hz
-color_beta = 1                 # 1 / f beta parameter (0.001 - 1)
+#load_noise_template = True
+#temp_sys = 70/(np.sqrt(365))     # system temperature, in K
+temp_sys = 70                     # system temperature, in K
+delta_nu = 9.33*1e6               # channel width, in Hz
+color_alpha = 0                   # 1 /f alpha parameter
+color_fknee = 1                   # 1/ f knee frequency, in Hz
+color_beta = 1                    # 1 / f beta parameter (0.001 - 1)
 sample_freq = 1.0                 # telescope sample rate, in Hz
 
 # ==================================================================
