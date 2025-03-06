@@ -16,6 +16,9 @@
 Created on Dec 8, 2014
 
 author: jakeret
+
+Update: Jan, 2025
+authors: Alessandro Marins, Luiza Ponte
 '''
 from __future__ import print_function, division, absolute_import, unicode_literals
 
@@ -50,8 +53,10 @@ class Plugin(BasePlugin):
         phi = theta
         
         beam_spec = BeamSpec(phi, theta, pixels**2)
-        frequencies = np.arange(params.beam_frequency_min, params.beam_frequency_max, params.beam_frequency_pixscale)
-        
+        #frequencies = np.arange(params.beam_frequency_min, params.beam_frequency_max, params.beam_frequency_pixscale)
+        nch         = params.beam_number_channels 
+        frequencies = np.linspace(params.beam_frequency_min,params.beam_frequency_max,nch+1)[:nch]
+        frequencies = np.around(frequencies, decimals=params.beam_decimals)
         beam_profiles, beam_norms = mod.load_beam_profile(beam_spec, frequencies, self.ctx.params)
         
         self.ctx.beam_spec = beam_spec
