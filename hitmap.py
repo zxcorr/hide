@@ -17,6 +17,23 @@ import astropy.io.fits as pyfits
 import matplotlib.pyplot as plt
 import os
 import h5py
+import configparser
+
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+ini_path = os.path.join(script_dir, "hide.ini")
+
+
+if not os.path.exists(ini_path):
+    raise FileNotFoundError(f".ini file not found in {ini_path}")
+
+
+config = configparser.ConfigParser()
+config.read(ini_path)
+
+
 
 
 def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True, naivemap=True, channel=0, title=None, output_path=None):
@@ -29,6 +46,11 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 	Padrão de formato do arquivo: 'bingo_tod_horn_{}_YYYYMMDD_HHMMSS.h5'
 	'''
 
+	if output_path is None:
+		output_path = path + 'maps/'
+	if not os.path.exists(output_path):
+		os.makedirs(output_path)
+    
 	dir_format = "{YYYY}/{MM:02d}/{DD:02d}/"
 	txt_format = "coord_bingo_{horn}_{YYYY:02d}{MM:02d}{DD:02d}.txt"
 	h5_format  = "bingo_tod_horn_{horn}_{YYYY:02d}{MM:02d}{DD:02d}_{HH:02d}{mm:02d}{SS:02d}.h5"
@@ -167,14 +189,13 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 		plt.close()
 
 
-seed0 = 2250
-#path = "/scratch/bingo/thiago.pena/extra/beam_test/240125/test2_seed/{}/".format(seed)
-path = "/scratch/bingo/thiago.pena/extra/beam_test/240412/seedtest{}/".format(seed0)
+seed0 = config.getint('Hitmap', 'seed0') 
+path = config.get('Hitmap', 'path')
 
 #horn_list =np.arange(0,140) # [28,56,84,112,140]  
 #for i in horn_list:
 f_bin = np.arange(30)
 for i in f_bin:
-	naive_hitmap(path, "2020-03-01", "2020-03-01", horns_i=0,horns_f=140, nside=256,channel = i, title = "signal+noise_SEED{}_ch{}_nch30_1d".format(seed0,i),output_path=path+'maps/')
+	naive_hitmap(path, "2020-03-01", "2020-03-01", horns_i=1,horns_f=140, nside=256,channel = i, title = "signal+noise_SEED{}_ch{}_nch30_1d".format(seed0,i),output_path=path+'maps/')
 	#naive_hitmap(path, "2020-03-01", "2020-03-01", horns_i=1,horns_f=140, nside=256,channel = i, title = "zernike_normalization_ch{}_nch30_1d".format(i),output_path=path+'maps/')
 

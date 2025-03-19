@@ -20,122 +20,131 @@ authors: Joao Alberto, Carlos Otobone
 
 Update: May, 2024
 authors: Alessandro Marins, Thiago Pena
+
+Update: March, 2025
+authors: Luiza Ponte
 '''
 
 import numpy as np
 import os
 import re
+import configparser 
 
-####################################################################
-#### THIS IS THE SCRIPT THAT WILL RUN HIDE FOR EACH HORN
-####################################################################
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+ini_path = os.path.join(script_dir, "hide.ini")
+
+
+if not os.path.exists(ini_path):
+    raise FileNotFoundError(f".ini file not found in {ini_path}")
+
+
+config = configparser.ConfigParser()
+config.read(ini_path)
 
 # ==================================================================
 # CHOOSE BINGO MODEL
 # ==================================================================
-
-bingo_model = 0 # either 0, 1 or 2
+bingo_model = config.getint('RunHide', 'bingo_model')
 
 # ==================================================================
 # CHOOSE DESTINATION AND WORKING PATHS
 # ==================================================================
 
-destination_path = '/scratch/bingo/thiago.pena/extra/venv/lib/python3.8/site-packages/hide-0.1.0-py3.8.egg/hide/config/' # change to your destination (the place where your hide package is located within your python repository)
-working_path = os.getcwd() + "/hide/config/"
+destination_path = config.get('RunHide', 'destination_path')
+working_path = config.get('RunHide', 'working_path')
 
 # ==================================================================
 # HORNS AZIMUTH AND ALTITUDE (ELEVATION)
 # ==================================================================
 
-az_in = np.loadtxt('/scratch/bingo/thiago.pena/extra/beam_test/hide/azimuth.txt')  # one hor    n -- one azimuth [degree]       
-al_in = np.loadtxt('/scratch/bingo/thiago.pena/extra/beam_test/hide/altitude.txt') # one horn -- one altitude [degree]
+az_in_file = config.get('RunHide', 'az_in_file')
+al_in_file = config.get('RunHide', 'al_in_file')
+az_in = np.loadtxt(az_in_file)  # one horn -- one azimuth [degree]
+al_in = np.loadtxt(al_in_file)  # one horn -- one altitude [degree]
+
 
 # ==================================================================
 # SETTING THE CONFIG FILES FOR EACH HORN
 # ==================================================================
-#python run_hide.py "bingo.py" "bingo_horn_{}" initial_horn final_horn
-# argv: base_file new_files horn_i horn_f
-if len(os.sys.argv)>1:
-	base_file = os.sys.argv[1] # base file, as "bingo.py"
-	dfile_short = os.sys.argv[2] # new files fmt, as "bingo_horn_{}"
-	initial_horn = int(os.sys.argv[3])
-	final_horn = int(os.sys.argv[4])
-	#day = re.findall("\d+", base_file)[0]
-	#d = int(day)-3
+if len(os.sys.argv) > 1:
+    base_file = os.sys.argv[1]  # base file, as "bingo.py"
+    dfile_short = os.sys.argv[2]  # new files fmt, as "bingo_horn_{}"
+    initial_horn = int(os.sys.argv[3])
+    final_horn = int(os.sys.argv[4])
 else:
-	base_file = "bingo.py"
-	dfile_short = 'bingo_horn'
-	initial_horn = 4
-	final_horn = 5 #az_in.size
-	
-dfile_short_py = dfile_short + '.py'
-#fits_info = "all_horns_fits_{}.txt".format(d)
-#fits_files = np.loadtxt(fits_info, dtype=str)
+    base_file = "bingo.py"
+    dfile_short = 'bingo_horn'
+    initial_horn = 1
+    final_horn = 140
 
+dfile_short_py = dfile_short + '.py'
 
 for i in range(initial_horn, final_horn):
     destination = open(working_path + 'bingo_horn_' + str(i) + '.py', 'w')
     source = open(working_path + 'bingo.py', 'r')
     for line in source:
         if line == 'coordinate_file_fmt\n':
-            destination.write('coordinate_file_fmt = "coord_bingo_' + 
-                             str(i) + '_' + '%s.txt"' + '\n') 
-                             # coordinates file name for each horn
-        
-        elif line == 'params_file_fmt\n':
-            destination.write('params_file_fmt = "params_bingo_' + 
-                             str(i) + '_' + '{}.txt"' + '\n') 
-                             # params file name for each horn
-        
+            destination.write('coordinate_file_fmt = "coord_bingo_' +
+                             str(i) + '_' + '%s.txt"' + '\n')
+            # coordinates file name for each horn
+
+        elif line == 'params_file_fmt\n': 
+            destination.write('params_file_fmt = "params_bingo_' +
+                             str(i) + '_' + '{}.txt"' + '\n')
+            # params file name for each horn
+
         elif line == 'mode\n':
-            destination.write('mode = ' + str(i) + '\n')  
-                             # horn suffix             
+            destination.write('mode = ' + str(i) + '\n')
+            # horn suffix
 
         elif line == 'azimuth_pointing\n':
             if az_in.size == 1:
-                  destination.write('azimuth_pointing = ' + 
-                             str(float(az_in)) + '\n')
-                             # azimuth pointing (this assumes a drift scan!)
+                destination.write('azimuth_pointing = ' +
+                                 str(float(az_in)) + '\n')
+                # azimuth pointing (this assumes a drift scan!)
             else:
-                destination.write('azimuth_pointing = ' + 
-                             str(az_in[i]) + '\n')
-                             # azimuth pointing (this assumes a drift scan!)
+                destination.write('azimuth_pointing = ' +
+                                 str(az_in[i]) + '\n')
+                # azimuth pointing (this assumes a drift scan!)
 
         elif line == 'altitude_start_pos\n':
             if al_in.size == 1:
                 destination.write('altitude_start_pos = ' +
-                             str(float(al_in)) + '\n')
-                             # altitude (elevation) pointing (this assumes a drift scan!)
+                                 str(float(al_in)) + '\n')
+                # altitude (elevation) pointing (this assumes a drift scan!)
             else:
                 destination.write('altitude_start_pos = ' +
-                             str(al_in[i]) + '\n') 
-                             # altitude (elevation) pointing (this assumes a drift scan!)
+                                 str(al_in[i]) + '\n')
+                # altitude (elevation) pointing (this assumes a drift scan!)
 
         elif line == 'seed\n':
             destination.write('seed = seed0 + {}\n'.format(i))
 
         elif line == 'gain_path\n':
-            destination.write('gain_path = "data/gain_template_fake_bingo_model_{}_'.format(bingo_model) + 
-                              str(i) + '.dat"' + '\n') 
-                             # gain template used for each horn
+            destination.write('gain_path = "data/gain_template_fake_bingo_model_{}_'.format(bingo_model) +
+                             str(i) + '.dat"' + '\n')
+            # gain template used for each horn
 
         elif line == 'background_path\n':
             destination.write('background_path = "data/background_template_fake_bingo_model_{}_'.format(bingo_model) +
-                              str(i) + '.dat"' + '\n') 
-                             # background template used for each horn
+                             str(i) + '.dat"' + '\n')
+            # background template used for each horn
 
         elif line == 'noise_path\n':
             destination.write('noise_path = "data/noise_template_fake_bingo_model_{}_'.format(bingo_model) +
-                             str(i) + '.dat"' + '\n') 
-                             # noise template used for each horn
+                             str(i) + '.dat"' + '\n')
+            # noise template used for each horn
 
         elif line == 'rfi_path\n':
             destination.write('rfi_path = "data/gain_template_fake_bingo_model_{}_'.format(bingo_model) +
-                             str(i) + '.dat"' + '\n') 
-                             # rfi template used for each horn
+                             str(i) + '.dat"' + '\n')
+            # rfi template used for each horn
 
         else:
-            destination.write(line)	
+            destination.write(line)
     source.close()
     destination.close()
 
@@ -146,6 +155,4 @@ for i in range(initial_horn, final_horn):
 for i in range(initial_horn, final_horn):
     print("\nExecuting horn {0}\n".format(i))
     os.system('cp ' + working_path + 'bingo_horn_' + str(i) + '.py' + ' ' + destination_path)
-    os.system('hide hide.config.' + dfile_short + '_' + str(i)) # run hide
-
-
+    os.system('hide hide.config.' + dfile_short + '_' + str(i))  # run hide
