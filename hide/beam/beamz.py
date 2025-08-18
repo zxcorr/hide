@@ -83,7 +83,7 @@ def load_beam_profile(beam_spec, frequencies, params):
 
 
 def coeffs_interpolation(data_freqs, data_coeffs, new_freqs):
-
+        data_coeffs = np.array(data_coeffs)
         Alphabeta_idxs = data_coeffs[0,:,1:3]
         # Saving the numerical values separetely and transposed, in which each row is a list of
         # fixed (alpha, beta) for all frequencies.
