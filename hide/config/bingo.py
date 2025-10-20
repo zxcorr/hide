@@ -26,6 +26,9 @@ authors: Alessandro Marins, Luiza Ponte
 
 Update: March, 2025
 authors: Luiza Ponte
+
+Update: October, 2025
+authors: Nicolli Soares
 '''
 
 from __future__ import print_function, division, absolute_import, unicode_literals
@@ -37,7 +40,7 @@ import configparser
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-ini_path = "/path_to_ini/hide.ini"
+ini_path = "/data/NSOARES/hide_seek/hide/hide.ini"
 
 
 if not os.path.exists(ini_path):
@@ -68,7 +71,7 @@ plugins = ["hide.plugins.initialize",
 #                                                             parallel=False
                                                             ),
                                     #"hide.plugins.apply_gain",
-                                    "hide.plugins.add_background",           
+                                    #"hide.plugins.add_background",           
                                     #"hide.plugins.background_noise",			
                                     "hide.plugins.write_tod_phaseswitch",
                                     "hide.plugins.clean_up",
@@ -132,9 +135,9 @@ interpolation_scheme = config.get('Beam', 'interpolation_scheme')
 scanning_strategy_provider = config.get('ScanningStrategy', 'scanning_strategy_provider')
 strategy_start = config.get('ScanningStrategy', 'strategy_start')
 strategy_end = config.get('ScanningStrategy', 'strategy_end')
-strategy_step_size = config.getint('ScanningStrategy', 'strategy_step_size')
+strategy_step_size = config.getfloat('ScanningStrategy', 'strategy_step_size')
 time_range = config.getint('ScanningStrategy', 'time_range')
-coord_step_size = config.getint('ScanningStrategy', 'coord_step_size')
+coord_step_size = config.getfloat('ScanningStrategy', 'coord_step_size')
 azimuth_pointing
 altitude_start_pos
 alt_delta = config.getfloat('ScanningStrategy', 'alt_delta')
