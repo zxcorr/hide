@@ -9,6 +9,8 @@ Author: Carlos Otobone, João Alberto
 Update: May, 2024
 authors: Alessandro Marins, Thiago Pena
 
+Update: October, 2025
+author: Nicolli Soares
 '''
 from __future__ import print_function
 import numpy as np
@@ -27,7 +29,7 @@ ini_path = os.path.join(script_dir, "hide.ini")
 
 
 if not os.path.exists(ini_path):
-    raise FileNotFoundError(f".ini file not found in {ini_path}")
+	raise FileNotFoundError(f".ini file not found in {ini_path}")
 
 
 config = configparser.ConfigParser()
@@ -36,7 +38,7 @@ config.read(ini_path)
 
 
 
-def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True, naivemap=True, channel=0, title=None, output_path=None):
+def naive_hitmap(path, start_date, end_date, step, horns_i,horns_f, nside, hitmap=True, naivemap=True, channel=0, title=None, output_path=None):
 	'''
 	Plota o hitmap e/ou naive map entre as datas start_date e end_date.
 
@@ -50,7 +52,7 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 		output_path = path + 'maps/'
 	if not os.path.exists(output_path):
 		os.makedirs(output_path)
-    
+	
 	dir_format = "{YYYY}/{MM:02d}/{DD:02d}/"
 	txt_format = "coord_bingo_{horn}_{YYYY:02d}{MM:02d}{DD:02d}.txt"
 	h5_format  = "bingo_tod_horn_{horn}_{YYYY:02d}{MM:02d}{DD:02d}_{HH:02d}{mm:02d}{SS:02d}.h5"
@@ -100,8 +102,6 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 		DD   = int(directory.split("/")[2])
 
 		for horn in range (horns_i,horns_f):
-			#if horn==0:horn=122
-			#if horn==1:horn=137
 		
 			print('\nLendo arquivos da corneta ' + str(horn) + '...')
 			
@@ -115,35 +115,45 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 			hit_tot += len(coord_lines)
 			
 			print('Coletando angulos de RA e DEC do txt...')
-
+			
+			step_us = int(step * 10**6) # em microsegundos
+			
+			us_per_hour = 3600 * 10**6
+			
+			n_intervals = int(us_per_hour // step_us)
+			last_hour_extra = (n_intervals % step_us == 0)
+			
 			for hour in range(24):
-
 				h5_file = h5_format.format(horn=horn, YYYY=YYYY, MM=MM, DD=DD, HH=hour, mm=0, SS=0)
-				temp_maps = h5py.File(w_path + h5_file, 'r')["P/Phase1"][()][channel]   #coleta as temperaturas do hdf5 em um vetor com uma frequencia fixa
+				temp_maps = h5py.File(w_path + h5_file, 'r')["P/Phase1"][()][channel]
 
-				if(hour != 23): seconds = 3600
-				else:           seconds = 3599	# pois vai até 23:59:59
-
-				for i in range(seconds):
-
-					line = coord_lines[(hour*3600 + i)]
-
+				current_n = n_intervals
+				if hour == 23 and last_hour_extra:
+					current_n -= 1   
+				
+				for i in range(current_n):
+					
+					if ((hour * n_intervals) + i) < (len(coord_lines)):
+						line = coord_lines[(hour * n_intervals) + i]
+					else:
+						continue
+					
 					ra = float(line.split(",")[-2])
 					dec = float(line.split(",")[-1])
 					instant = int(float(line.split(",")[0]))
-					
+			
 					theta = ra
 					phi = dec
 					pix = hp.ang2pix(nside, theta, phi, lonlat = True)
-
+			
 					NAIVE[pix] += temp_maps[i]
 					HITMAP[pix] += 1
 			if horn==0: print(dec)
 
 		if (directory == dir_list[-1]):
-			for i in range(hp.nside2npix(nside)):
-				if HITMAP[i]!=0:
-					NAIVE[i] /= HITMAP[i]   
+			for j in range(hp.nside2npix(nside)):
+				if HITMAP[j]!=0:
+					NAIVE[j] /= HITMAP[j]   
 
 	
 	print('\nContagem, total esperado: ' + str(int(hit_tot - horns_f+horns_i)))
@@ -192,10 +202,10 @@ def naive_hitmap(path, start_date, end_date, horns_i,horns_f, nside, hitmap=True
 seed0 = config.getint('Hitmap', 'seed0') 
 path = config.get('Hitmap', 'path')
 
-#horn_list =np.arange(0,140) # [28,56,84,112,140]  
-#for i in horn_list:
+step = 0.1 # segundos
 f_bin = np.arange(30)
+
 for i in f_bin:
-	naive_hitmap(path, "2020-03-01", "2020-03-01", horns_i=1,horns_f=140, nside=256,channel = i, title = "signal+noise_SEED{}_ch{}_nch30_1d".format(seed0,i),output_path=path+'maps/')
+	naive_hitmap(path, "2020-03-01", "2020-03-01", step, horns_i=0,horns_f=139, nside=256,channel = i, title = "signal+noise_SEED{}_ch{}_nch30_1d".format(seed0,i),output_path=path+'maps/')
 	#naive_hitmap(path, "2020-03-01", "2020-03-01", horns_i=1,horns_f=140, nside=256,channel = i, title = "zernike_normalization_ch{}_nch30_1d".format(i),output_path=path+'maps/')
 
