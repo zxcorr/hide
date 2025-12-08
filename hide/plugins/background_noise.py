@@ -35,7 +35,7 @@ class Plugin(BasePlugin):
     """
 
     def __call__(self):
-                
+
         params = self.ctx.params
         size = self.ctx.tod_vx.shape
         if params.load_noise_template:
@@ -51,11 +51,12 @@ class Plugin(BasePlugin):
             mod = importlib.import_module(self.ctx.params.instrument)
             freq = self.ctx.frequencies
             wn_scale = 1.0
-
+        
         #noise = get_noise(params.white_noise_scale, params.color_noise_amp, params.color_noise_beta, size)
 
-        noise = get_noise_lucas(wn_scale, params.color_alpha, params.color_fknee, params.color_beta, params.sample_freq, params.temp_sys, params.delta_nu, size,params)
+        noise = get_noise_lucas(wn_scale, params.color_alpha, params.color_fknee, params.color_beta, params.sample_freq, params.temp_sys, params.delta_nu, size, params)
         
+
         self.ctx.tod_vx += noise
         #TODO: no noise for Y-polarization
 #         self.ctx.tod_vy += noise
@@ -79,9 +80,14 @@ def get_noise_lucas(scale_adu, alpha, fknee, beta, sfreq, tempsys, deltanu, size
     samples = size[1]
     
     wnoise = np.zeros((n_nu, samples))
+    
+    # make global seed to generate one RNG instance (to be used for each channel i)
+    rng = np.random.default_rng(params.seed) 
     #params = self.ctx.params 
     for i in range(0, n_nu):
-        wnoise[i, :] = thermal_noise_tod(sfreq, size, params)
+        # for each channel call the thermal_noise_tod function which has the unique seed, then generate new integer to use as channel_seed
+        channel_seed = rng.integers(0, 2**32) # produce some random integer for channel i 
+        wnoise[i, :] = thermal_noise_tod(sfreq, size, params, channel_seed = channel_seed)
 
     wnoise_norm = np.std(wnoise) # We must normalize our TOD
 

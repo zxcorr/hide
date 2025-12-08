@@ -29,22 +29,24 @@ def noise_amplitude(delta_nu, t_sys):
 
     return t_sys / np.sqrt(delta_nu)
 
-def thermal_noise_tod(sfreq, size, params):
-
+def thermal_noise_tod(sfreq, size, params, channel_seed = None):
     samples = size[1]
 
     # frequencies
     f = np.fft.fftfreq(samples, d = 1. / sfreq)
     
     # scaling factor for all frequencies 
-    s_scale = abs(np.concatenate([f[f<0], [f[-1]]]))
-    
+    s_scale = abs(np.concatenate([f[f<0], [f[-1]]]))  
     s_scale = 1. + np.zeros(s_scale.size)
-    
-    # scale random power + phase
+
+    # Mod. Init RNG, default is None (the global sim seed) otherwise just use the provided seed from get_noise_lucas
+    rng = np.random.default_rng(params.seed if channel_seed is None else channel_seed)
+    sr = s_scale * rng.normal(size=len(s_scale)) 
+    si = s_scale * rng.normal(size=len(s_scale))
+    """ # scale random power + phase
     np.random.seed(params.seed)
     sr = s_scale * np.random.normal(size=len(s_scale))
-    si = s_scale * np.random.normal(size=len(s_scale))
+    si = s_scale * np.random.normal(size=len(s_scale)) """
     if not (samples % 2): si[0] = si[0].real
 
     s = sr + 1J * si
@@ -103,6 +105,7 @@ def color_noise_tod(alpha, fknee, beta, delta_nu, sfreq, size):
     y = np.fft.ifftn(test_out).real * np.sqrt(n_nu)
 
     return np.sqrt(c_norm) * y
+
 
 def noisegen(beta=0, N=2**13):
     """
